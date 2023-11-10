@@ -23,6 +23,8 @@ class LRS3SeqDataset(Dataset):
         self.memory_cache = {} # we use hash table to accelerate indexing
         self.face3d_helper = Face3DHelper('deep_3drecon/BFM')
         self.x_multiply = 8
+        print("hparams load_db")
+        print(hparams)
         if hparams['load_db_to_memory']:
             self.load_db_to_memory()
         
@@ -188,7 +190,10 @@ class LRS3SeqDataset(Dataset):
         return self.ds[index]
     
     def __getitem__(self, idx):
-        if hparams['load_db_to_memory']:
+        # print("hparams final load_db", flush = True)
+        # print(hparams, flush = True)
+        # if hparams['load_db_to_memory']:
+        if False:
             return self.memory_cache[idx]
         
         raw_item = self._get_item(idx)
@@ -230,7 +235,7 @@ class LRS3SeqDataset(Dataset):
         return item
 
     @staticmethod
-    def _collate_2d(values, max_len=None, pad_value=0):
+    def _collateTWO_D(values, max_len=None, pad_value=0):
         """
         Convert a list of 2d tensors into a padded 3d tensor.
             values: list of Batch tensors with shape [T, C]
@@ -259,14 +264,14 @@ class LRS3SeqDataset(Dataset):
         x_len = max(s['mel'].size(0) for s in samples)
         x_len = x_len + (self.x_multiply - (x_len % self.x_multiply)) % self.x_multiply
         y_len = x_len // 2
-        mel_batch = self._collate_2d([s["mel"] for s in samples], max_len=x_len, pad_value=0) # [b, t_max_y, 64]
-        hubert_batch = self._collate_2d([s["hubert"] for s in samples], max_len=x_len, pad_value=0) # [b, t_max_y, 64]
-        exp_batch = self._collate_2d([s["exp"] for s in samples], max_len=y_len, pad_value=0) # [b, t_max_y, 64]
-        pose_batch = self._collate_2d([s["pose"] for s in samples], max_len=y_len, pad_value=0) # [b, t_max_y, 64]
+        mel_batch = self._collateTWO_D([s["mel"] for s in samples], max_len=x_len, pad_value=0) # [b, t_max_y, 64]
+        hubert_batch = self._collateTWO_D([s["hubert"] for s in samples], max_len=x_len, pad_value=0) # [b, t_max_y, 64]
+        exp_batch = self._collateTWO_D([s["exp"] for s in samples], max_len=y_len, pad_value=0) # [b, t_max_y, 64]
+        pose_batch = self._collateTWO_D([s["pose"] for s in samples], max_len=y_len, pad_value=0) # [b, t_max_y, 64]
         
-        idexp_lm3d = self._collate_2d([s["idexp_lm3d"] for s in samples], max_len=y_len, pad_value=0) # [b, t_max, 1]
+        idexp_lm3d = self._collateTWO_D([s["idexp_lm3d"] for s in samples], max_len=y_len, pad_value=0) # [b, t_max, 1]
         ref_mean_lm3d = torch.stack([s['ref_mean_lm3d'] for s in samples], dim=0) # [b, h=204*5]
-        mouth_idexp_lm3d = self._collate_2d([s["mouth_idexp_lm3d"] for s in samples], max_len=y_len, pad_value=0) # [b, t_max, 1]
+        mouth_idexp_lm3d = self._collateTWO_D([s["mouth_idexp_lm3d"] for s in samples], max_len=y_len, pad_value=0) # [b, t_max, 1]
 
         x_mask = (mel_batch.abs().sum(dim=-1) > 0).float() # [b, t_max_x]
         y_mask = (pose_batch.abs().sum(dim=-1) > 0).float() # [b, t_max_y]
@@ -286,7 +291,7 @@ class LRS3SeqDataset(Dataset):
         })
 
         if 'f0' in samples[0].keys():
-            f0_batch = self._collate_2d([s["f0"].reshape([-1,1]) for s in samples], max_len=x_len, pad_value=0).squeeze(-1) # [b, t_max_y]
+            f0_batch = self._collateTWO_D([s["f0"].reshape([-1,1]) for s in samples], max_len=x_len, pad_value=0).squeeze(-1) # [b, t_max_y]
             batch['f0'] = f0_batch
         return batch
 

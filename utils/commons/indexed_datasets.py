@@ -48,35 +48,64 @@ class IndexedDataset:
         self.id2pos = index_data.get('id2pos', {})
         self.data_files = [open(f"{path}.data", 'rb', buffering=-1)]
 
+    # def __getitem__(self, i):
+    #     if self.id2pos is not None and len(self.id2pos) > 0:
+    #         i = self.id2pos[i]
+    #     self.check_index(i)
+        
+    #     chunk_id = bisect(self.meta['chunk_begin'][1:], self.byte_offsets[i])
+    #     data_file = open(f"{self.path}.data", 'rb', buffering=-1)
+    #     data_file.seek(self.byte_offsets[i] - self.meta['chunk_begin'][chunk_id])
+    #     b = data_file.read(self.byte_offsets[i + 1] - self.byte_offsets[i])
+    #     data_file.close()
+        
+    #     # chunk_id = bisect(self.meta['chunk_begin'][1:], self.byte_offsets[i])
+    #     # data_file = self.data_files[chunk_id]
+    #     # data_file.seek(self.byte_offsets[i] - self.meta['chunk_begin'][chunk_id])
+    #     # b = data_file.read(self.byte_offsets[i + 1] - self.byte_offsets[i])
+
+    #     unpickle = self.unpickle
+    #     if unpickle:
+    #         if self.gzip:
+    #             b = gzip.decompress(b)
+    #         item = pickle.loads(b)
+    #     else:
+    #         item = b
+    #     return item
+
     def __getitem__(self, i):
+        # Convert ID to index if necessary
         if self.id2pos is not None and len(self.id2pos) > 0:
             i = self.id2pos[i]
         self.check_index(i)
-        
-        chunk_id = bisect(self.meta['chunk_begin'][1:], self.byte_offsets[i])
-        data_file = open(f"{self.path}.data", 'rb', buffering=-1)
-        data_file.seek(self.byte_offsets[i] - self.meta['chunk_begin'][chunk_id])
-        b = data_file.read(self.byte_offsets[i + 1] - self.byte_offsets[i])
-        data_file.close()
-        
-        # chunk_id = bisect(self.meta['chunk_begin'][1:], self.byte_offsets[i])
-        # data_file = self.data_files[chunk_id]
-        # data_file.seek(self.byte_offsets[i] - self.meta['chunk_begin'][chunk_id])
-        # b = data_file.read(self.byte_offsets[i + 1] - self.byte_offsets[i])
 
-        unpickle = self.unpickle
-        if unpickle:
+        # Determine the chunk that contains the item
+        chunk_id = bisect(self.meta['chunk_begin'][1:], self.byte_offsets[i])
+        # Adjust for single file dataset
+        data_filename = f"{self.path}.data" if chunk_id == 0 else f"{self.path}.{chunk_id}.data"
+        offset_within_chunk = self.byte_offsets[i] - self.meta['chunk_begin'][chunk_id]
+
+        # Read the item data from the corresponding chunk
+        with open(data_filename, 'rb') as data_file:
+            data_file.seek(offset_within_chunk)
+            b = data_file.read(self.byte_offsets[i + 1] - self.byte_offsets[i])
+
+        # Decompress and unpickle if necessary
+        if self.unpickle:
             if self.gzip:
                 b = gzip.decompress(b)
             item = pickle.loads(b)
         else:
             item = b
-        return item
 
+        return item
     def __del__(self):
         for data_file in self.data_files:
             data_file.close()
 
+    # def check_index(self, i):
+    #     if i < 0 or i >= len(self.byte_offsets) - 1:
+    #         raise IndexError('index out of range')
     def check_index(self, i):
         if i < 0 or i >= len(self.byte_offsets) - 1:
             raise IndexError('index out of range')

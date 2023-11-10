@@ -124,6 +124,8 @@ class Trainer:
 
     def ddp_run(self, gpu_idx, task_cls, hparams_):
         hparams.update(hparams_)
+        print("sdz update 3", flush=True)
+        print(hparams, flush=True)
         self.proc_rank = gpu_idx
         self.init_ddp_connection(self.proc_rank, self.num_gpus)
         if dist.get_rank() != 0 and not self.debug:
@@ -543,20 +545,56 @@ class Trainer:
         os.makedirs(f'{self.work_dir}/terminal_logs', exist_ok=True)
         Tee(f'{self.work_dir}/terminal_logs/log_{t}.txt', 'w')
 
+    # def save_codes(self):
+    #     if len(hparams['save_codes']) > 0:
+    #         t = datetime.now().strftime('%Y%m%d%H%M%S')
+    #         code_dir = f'{self.work_dir}/codes/{t}'
+    #         subprocess.check_call(f'mkdir -p "{code_dir}"', shell=True)
+    #         for c in hparams['save_codes']:
+    #             if os.path.exists(c):
+    #                 subprocess.check_call(
+    #                     f'rsync -aR '
+    #                     f'--include="*.py" '
+    #                     f'--include="*.yaml" '
+    #                     f'--exclude="__pycache__" '
+    #                     f'--include="*/" '
+    #                     f'--exclude="*" '
+    #                     f'"./{c}" "{code_dir}/"',
+    #                     shell=True)
+    #         print(f"| Copied codes to {code_dir}.")
+
+
+
     def save_codes(self):
+        import os   
+        import shutil
+        from datetime import datetime
         if len(hparams['save_codes']) > 0:
             t = datetime.now().strftime('%Y%m%d%H%M%S')
-            code_dir = f'{self.work_dir}/codes/{t}'
-            subprocess.check_call(f'mkdir -p "{code_dir}"', shell=True)
+            code_dir = os.path.join(self.work_dir, 'codes', t)
+            os.makedirs(code_dir, exist_ok=True)  # 使用os.makedirs代替mkdir -p
+
             for c in hparams['save_codes']:
                 if os.path.exists(c):
-                    subprocess.check_call(
-                        f'rsync -aR '
-                        f'--include="*.py" '
-                        f'--include="*.yaml" '
-                        f'--exclude="__pycache__" '
-                        f'--include="*/" '
-                        f'--exclude="*" '
-                        f'"./{c}" "{code_dir}/"',
-                        shell=True)
+                    # 遍历目录中所有文件和文件夹
+                    for root, dirs, files in os.walk(c):
+                        # 复制所有匹配的文件
+                        for file in files:
+                            if file.endswith('.py') or file.endswith('.yaml'):
+                                file_path = os.path.join(root, file)
+                                relative_path = os.path.relpath(root, c)
+                                dest_directory = os.path.join(code_dir, relative_path)
+                                os.makedirs(dest_directory, exist_ok=True)
+                                shutil.copy2(file_path, dest_directory)
+
+                        # 复制所有目录，即使它们是空的
+                        for dir in dirs:
+                            dir_path = os.path.join(root, dir)
+                            relative_path = os.path.relpath(dir_path, c)
+                            dest_directory = os.path.join(code_dir, relative_path)
+                            os.makedirs(dest_directory, exist_ok=True)
+
+                else:
+                    print(f"Directory {c} does not exist")
+
             print(f"| Copied codes to {code_dir}.")

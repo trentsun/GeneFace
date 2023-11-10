@@ -23,6 +23,9 @@ def override_config(old_config: dict, new_config: dict):
 
 
 def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, global_hparams=True):
+    import traceback
+    print("Printing stack:")
+    traceback.print_stack()
     if config == '' and exp_name == '':
         parser = argparse.ArgumentParser(description='')
         parser.add_argument('--config', type=str, default='',
@@ -120,8 +123,11 @@ def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, glob
     hparams_['exp_name'] = args.exp_name
     global global_print_hparams
     if global_hparams:
+        print("sdz clear", flush=True)
         hparams.clear()
         hparams.update(hparams_)
+        print("sdz update ", flush=True)
+        print(hparams, flush=True)
     if print_hparams and global_print_hparams and global_hparams:
         print('| Hparams chains: ', config_chains)
         print('| Hparams: ')
@@ -129,4 +135,6 @@ def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, glob
             print(f"\033[;33;m{k}\033[0m: {v}, ", end="\n" if i % 5 == 4 else "")
         print("")
         global_print_hparams = False
+    print("sdz param", flush = True)
+    print(hparams, flush = True)
     return hparams_

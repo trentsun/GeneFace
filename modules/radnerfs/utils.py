@@ -373,7 +373,7 @@ def seed_everything(seed):
     #torch.backends.cudnn.benchmark = True
 
 
-def torch_vis_2d(x, renormalize=False):
+def torch_visTWO_D(x, renormalize=False):
     # x: [3, H, W] or [1, H, W] or [H, W]
     import matplotlib.pyplot as plt
     import numpy as np
@@ -384,7 +384,7 @@ def torch_vis_2d(x, renormalize=False):
             x = x.permute(1,2,0).squeeze()
         x = x.detach().cpu().numpy()
         
-    print(f'[torch_vis_2d] {x.shape}, {x.dtype}, {x.min()} ~ {x.max()}')
+    print(f'[torch_visTWO_D] {x.shape}, {x.dtype}, {x.min()} ~ {x.max()}')
     
     x = x.astype(np.float32)
     

@@ -19,7 +19,7 @@ import mediapipe
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, network_size=4, device='cuda')
+# fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, network_size=4, device='cuda')
 mp_face_mesh = mediapipe.solutions.face_mesh
 face_reconstructor = deep_3drecon.Reconstructor()
 
@@ -87,7 +87,7 @@ def extract_lms_mediapipe_job(frames):
             frame_i += 1
     bs, H, W, _ = frames.shape
     ldms478 = np.array(ldms_normed)
-    lm68 = mediapipe_lm478_to_face_alignment_lm68(ldms478, H, W, return_2d=True)
+    lm68 = mediapipe_lm478_to_face_alignment_lm68(ldms478, H, W, returnTWO_D=True)
     lm5_lst = [lm68_2_lm5(lm68[i]) for i in range(lm68.shape[0])]
     lm5 = np.stack(lm5_lst)
     return ldms478, lm68, lm5

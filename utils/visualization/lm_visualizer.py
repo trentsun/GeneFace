@@ -45,7 +45,9 @@ def render_idexp_npy_to_lm_video(npy_name, out_video_name, audio_name=None):
         out_name = os.path.join(tmp_img_dir, f'{format(i_img, "05d")}.png')
         cv2.imwrite(out_name, img)
     imgs_to_video(tmp_img_dir, out_video_name, audio_name)
-    os.system(f"rm -r {tmp_img_dir}")
+    # os.system(f"rm -r {tmp_img_dir}")
+    os.system(f'rmdir /s /q "{tmp_img_dir}"')
+
 
 if __name__ == '__main__':
     import argparse

@@ -10,11 +10,11 @@ from torch.utils.data import ConcatDataset
 from utils.commons.hparams import hparams
 
 
-def collate_1d_or_2d(values, pad_idx=0, left_pad=False, shift_right=False, max_len=None, shift_id=1):
+def collate_1d_orTWO_D(values, pad_idx=0, left_pad=False, shift_right=False, max_len=None, shift_id=1):
     if len(values[0].shape) == 1:
         return collate_1d(values, pad_idx, left_pad, shift_right, max_len, shift_id)
     else:
-        return collate_2d(values, pad_idx, left_pad, shift_right, max_len)
+        return collateTWO_D(values, pad_idx, left_pad, shift_right, max_len)
 
 
 def collate_1d(values, pad_idx=0, left_pad=False, shift_right=False, max_len=None, shift_id=1):
@@ -35,7 +35,7 @@ def collate_1d(values, pad_idx=0, left_pad=False, shift_right=False, max_len=Non
     return res
 
 
-def collate_2d(values, pad_idx=0, left_pad=False, shift_right=False, max_len=None):
+def collateTWO_D(values, pad_idx=0, left_pad=False, shift_right=False, max_len=None):
     """Convert a list of 2d tensors into a padded 3d tensor."""
     size = max(v.size(0) for v in values) if max_len is None else max_len
     res = values[0].new(len(values), size, values[0].shape[1]).fill_(pad_idx)

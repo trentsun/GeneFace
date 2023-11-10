@@ -46,7 +46,7 @@ config.gradient_acc = 1
 config.seed = 2048
 
 # dataload numworkers
-config.num_workers = 2
+config.num_workers = 0
 
 # WandB Logger
 config.wandb_key = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"

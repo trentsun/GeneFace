@@ -23,6 +23,7 @@ class PostnetInfer:
         
     def build_postnet_task(self):
         assert hparams['task_cls'] != ''
+
         pkg = ".".join(hparams["task_cls"].split(".")[:-1])
         cls_name = hparams["task_cls"].split(".")[-1]
         task_cls = getattr(importlib.import_module(pkg), cls_name)
@@ -30,6 +31,9 @@ class PostnetInfer:
         task.build_model()
         task.eval()
         steps = hparams.get('infer_ckpt_steps', 12000)
+        print("steps", flush = True)
+        print(steps, flush = True)
+        print(hparams)
         load_ckpt(task.model, hparams['work_dir'], 'model', steps=steps)
         load_ckpt(task.audio2motion_task, hparams['work_dir'], 'audio2motion_task', steps=steps)
         load_ckpt(task.syncnet_task, hparams['work_dir'], 'syncnet_task', steps=steps)

@@ -47,23 +47,53 @@ def extract_semantics(ori_imgs_dir, parsing_dir):
     print(f'[INFO] ===== extracted semantics =====')
 
 
-def extract_landmarks(ori_imgs_dir):
+# def extract_landmarks(ori_imgs_dir):
 
+#     print(f'[INFO] ===== extract face landmarks from {ori_imgs_dir} =====')
+
+#     import face_alignment
+#     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, flip_input=False)
+#     image_paths = glob.glob(os.path.join(ori_imgs_dir, '*.jpg'))
+#     for image_path in tqdm.tqdm(image_paths):
+#         input = cv2.imread(image_path, cv2.IMREAD_UNCHANGED) # [H, W, 3]
+#         input = cv2.cvtColor(input, cv2.COLOR_BGR2RGB)
+#         preds = fa.get_landmarks(input)
+#         preds = fa.get_landmarks(input)
+#         if preds is not None:
+#             # 现在可以安全地计算 preds 的长度
+#             if len(preds) > 0:
+#                 lands = preds[0].reshape(-1, 2)[:, :2]
+#                 np.savetxt(image_path.replace('jpg', 'lms'), lands, '%f')
+#         # 如果 preds 是 None，可能需要添加一些错误处理的代码
+#         else:
+#             print(f"No faces detected in image {image_path}")
+#         del input
+#     del fa
+#     print(f'[INFO] ===== extracted face landmarks =====')
+
+def extract_landmarks(ori_imgs_dir):
     print(f'[INFO] ===== extract face landmarks from {ori_imgs_dir} =====')
 
     import face_alignment
-    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, flip_input=False)
-    image_paths = glob.glob(os.path.join(ori_imgs_dir, '*.jpg'))
-    for image_path in tqdm.tqdm(image_paths):
-        input = cv2.imread(image_path, cv2.IMREAD_UNCHANGED) # [H, W, 3]
-        input = cv2.cvtColor(input, cv2.COLOR_BGR2RGB)
-        preds = fa.get_landmarks(input)
-        if len(preds) > 0:
-            lands = preds[0].reshape(-1, 2)[:,:2]
-            np.savetxt(image_path.replace('jpg', 'lms'), lands, '%f')
-    del fa
-    print(f'[INFO] ===== extracted face landmarks =====')
 
+    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, flip_input=False)
+    image_paths = glob.glob(os.path.join(ori_imgs_dir, '*.jpg'))
+    
+    # 打开一个文件用于记录错误
+    with open('error.txt', 'w') as error_file:
+        for image_path in tqdm.tqdm(image_paths):
+            input = cv2.imread(image_path, cv2.IMREAD_UNCHANGED) # [H, W, 3]
+            input = cv2.cvtColor(input, cv2.COLOR_BGR2RGB)
+            preds = fa.get_landmarks(input)
+            if preds is not None:
+                if len(preds) > 0:
+                    lands = preds[0].reshape(-1, 2)[:,:2]
+                    np.savetxt(image_path.replace('jpg', 'lms'), lands, '%f')
+            else:
+                # 将错误信息写入文件
+                print(f"No faces detected in image {image_path}")
+                error_file.write(f'No faces detected in image {image_path}\n')
+    print(f'[INFO] ===== extracted face landmarks =====')
 
 def extract_background(base_dir, ori_imgs_dir):
     
@@ -82,7 +112,9 @@ def extract_background(base_dir, ori_imgs_dir):
     all_xys = np.mgrid[0:h, 0:w].reshape(2, -1).transpose()
     distss = []
     for image_path in tqdm.tqdm(image_paths):
-        parse_img = cv2.imread(image_path.replace('ori_imgs', 'parsing').replace('.jpg', '.png'))
+        parse_img_path = image_path.replace('ori_imgs', 'parsing').replace('.jpg', '.png')
+        print('parse_img_path %s' % parse_img_path)
+        parse_img = cv2.imread(parse_img_path)
         bg = (parse_img[..., 0] == 255) & (parse_img[..., 1] == 255) & (parse_img[..., 2] == 255)
         fg_xys = np.stack(np.nonzero(~bg)).transpose(1, 0)
         nbrs = NearestNeighbors(n_neighbors=1, algorithm='kd_tree').fit(fg_xys)
@@ -113,10 +145,21 @@ def extract_background(base_dir, ori_imgs_dir):
     bg_xys = np.stack(np.nonzero(~bc_pixs)).transpose()
     fg_xys = np.stack(np.nonzero(bc_pixs)).transpose()
     nbrs = NearestNeighbors(n_neighbors=1, algorithm='kd_tree').fit(fg_xys)
+    print(fg_xys.shape)
+    print(bg_xys.shape)
+    # 在调用kneighbors之前，添加以下检查
+    if fg_xys.size == 0:
+        raise ValueError("fg前景像素为空，无法执行k-NN搜索。")
+    if fg_xys.shape[0] < 1:  # 因为n_neighbors=1
+        raise ValueError("fg前景像素的数量少于所需的最近邻数量。")
+    if bg_xys.size == 0:
+        raise ValueError("bg前景像素为空，无法执行k-NN搜索。")
+    if bg_xys.shape[0] < 1:  # 因为n_neighbors=1
+        raise ValueError("bg前景像素的数量少于所需的最近邻数量。")
     distances, indices = nbrs.kneighbors(bg_xys)
     bg_fg_xys = fg_xys[indices[:, 0]]
     bg_img[bg_xys[:, 0], bg_xys[:, 1], :] = bg_img[bg_fg_xys[:, 0], bg_fg_xys[:, 1], :]
-
+    print(os.path.join(base_dir, 'bc.jpg'))
     cv2.imwrite(os.path.join(base_dir, 'bc.jpg'), bg_img)
 
     print(f'[INFO] ===== extracted background image =====')
@@ -273,8 +316,8 @@ def face_tracking(video_id, ori_imgs_dir):
     tmp_image = cv2.imread(image_paths[0], cv2.IMREAD_UNCHANGED) # [H, W, 3]
     h, w = tmp_image.shape[:2]
 
-    cmd = f'python data_util/face_tracking/face_tracker.py --idname={video_id} --img_h={h} --img_w={w} --frame_num={len(image_paths)}'
-
+    cmd = f'python data_util/face_tracking/face_tracker.py --idname={video_id} --img_h={h} --img_w={w} --frame_num={len(image_paths)} > face_tracker_log'
+    # cmd = f'python data_util/face_tracking/face_tracker.py --idname={video_id} --img_h={h} --img_w={w} --frame_num=1'
     os.system(cmd)
 
     print(f'[INFO] ===== finished face tracking =====')

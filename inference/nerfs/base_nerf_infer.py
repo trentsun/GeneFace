@@ -130,6 +130,8 @@ class BaseNeRFInfer:
 
     def _forward_nerf_task_ddp(self, gpu_idx, batches, hparams_):
         hparams.update(hparams_) # the global hparams dict in the subprocess is empty, so inplace-update it!
+        print("sdz update 1", flush=True)
+        print(hparams, flush=True)
         self.proc_rank = gpu_idx
         self.init_ddp_connection(self.proc_rank, self.num_gpus)
         # if dist.get_rank() != 0:

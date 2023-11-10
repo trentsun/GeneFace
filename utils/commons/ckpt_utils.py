@@ -24,6 +24,8 @@ def get_all_ckpts(work_dir, steps=None):
 
 
 def load_ckpt(cur_model, ckpt_base_dir, model_name='model', force=True, strict=True, steps=None):
+    print("ckpt_base_dir", flush=True)
+    print(ckpt_base_dir, flush=True)
     if os.path.isfile(ckpt_base_dir):
         base_dir = os.path.dirname(ckpt_base_dir)
         ckpt_path = ckpt_base_dir

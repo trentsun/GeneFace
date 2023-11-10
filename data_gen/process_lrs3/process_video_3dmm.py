@@ -13,7 +13,7 @@ import copy
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, network_size=4, device='cuda')
+fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, network_size=4, device='cuda')
 face_reconstructor = deep_3drecon.Reconstructor()
 
 # landmark detection in Deep3DRecon
