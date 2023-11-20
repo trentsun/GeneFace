@@ -48,7 +48,7 @@ def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, glob
 
     import traceback
     print("Printing stack:")
-    traceback.print_stack()
+    # traceback.print_stack()
     print(config, flush=True)
     print(exp_name, flush=True)
     if config == '' and exp_name == '':
