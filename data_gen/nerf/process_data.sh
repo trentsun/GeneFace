@@ -71,12 +71,5 @@ python tasks/run.py --config=egs/datasets/videos/gdg8/lm3d_radnerf_torso.yaml --
 
 
 
-# 7. integrate the results into meta
-python data_util/process.py --video_id=gdg8 --task=9
-# 8. calculate audio features
-python data_gen/nerf/extract_hubert_mel_f0.py --video_id=gdg8
-# 9. calculate 3DMM 
-python data_gen/nerf/extract_3dmm.py --video_id=gdg8
-# binarize the dataset into `data/binary/videos/gdg8/trainval_dataset.npy`
-python data_gen/nerf/binarizer.py --config=egs/datasets/videos/gdg8/lm3d_radnerf.yaml
+
 python -c "print('success!')"
