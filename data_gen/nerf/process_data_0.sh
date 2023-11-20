@@ -11,7 +11,7 @@ python data_util/process.py --video_id=$1 --task=7
 python data_util/process.py --video_id=$1 --task=4 &
 python data_util/process.py --video_id=$1 --task=8
 # 4. extract background image
-python data_util/process.py --video_id=$1 --task=5
+# python data_util/process.py --video_id=$1 --task=5
 # Optional: Once the background image is extracted before running step 5,
 # you could use a image inpainting tool (such as Inpaint on MacOS)
 # to edit the backgroud image, so it could be more realistic.
