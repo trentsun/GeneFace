@@ -130,6 +130,8 @@ class BaseNeRFInfer:
 
     def _forward_nerf_task_ddp(self, gpu_idx, batches, hparams_):
         hparams.update(hparams_) # the global hparams dict in the subprocess is empty, so inplace-update it!
+        print("sdz update 1", flush=True)
+        print(hparams, flush=True)
         self.proc_rank = gpu_idx
         self.init_ddp_connection(self.proc_rank, self.num_gpus)
         # if dist.get_rank() != 0:
@@ -304,7 +306,9 @@ class BaseNeRFInfer:
     ##############
     @classmethod
     def save_mp4(self, img_dir, wav_name, out_name):
-        os.system(f"ffmpeg -i {img_dir}/%5d.png -i {wav_name} -shortest -v quiet -c:v libx264 -pix_fmt yuv420p -b:v 2000k -r 25 -strict -2 -y {out_name}")
+        cmd = f"ffmpeg -i {img_dir}/%5d.png -i {wav_name} -shortest -v quiet -c:v libx264 -pix_fmt yuv420p -b:v 2000k -r 25 -strict -2 -y {out_name}"
+        print("cmd %s" % cmd)
+        os.system(cmd)
 
     def save_wav16k(self, inp):
         source_name = inp['audio_source_name']

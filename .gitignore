@@ -1,3 +1,21 @@
+# 忽略单个文件
+BaselFaceModel.tgz
+May.zip
+PublicMM1/
+__MACOSX/
+egs/datasets/videos/gdg6_2/
+egs/datasets/videos/gdg7/
+face_tracker_log
+.qiniu_pythonsdk_hostscache.json
+model_train/*
+tts.py
+error.txt
+error_face.txt
+log.txt
+lrs3.zip
+lrs3/
+test.py
+tmp.txt
 # big files
 data_util/face_tracking/3DMM/01_MorphableModel.mat
 data_util/face_tracking/3DMM/3DMM_info.npy

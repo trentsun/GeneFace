@@ -7,13 +7,13 @@ eye_idx_in_mediapipe_mesh = [33, 160, 158, 133, 153, 144, 362, 385, 387, 263, 37
 mouth_idx_in_mediapipe_mesh = [61,  40,  37,   0, 267, 270, 291, 321, 314,  17,  84,  91,  78, 81,  13, 311, 308, 402,  14, 178]
 lm68_idx_in_mediapipe_mesh = yaw_idx_in_mediapipe_mesh + brow_idx_in_mediapipe_mesh + nose_idx_in_mediapipe_mesh + eye_idx_in_mediapipe_mesh + mouth_idx_in_mediapipe_mesh
 
-def mediapipe_lm478_to_face_alignment_lm68(lm478, H, W, return_2d=True):
+def mediapipe_lm478_to_face_alignment_lm68(lm478, H, W, returnTWO_D=True):
     """
     lm478: [B, 478, 3] or [478,3]
     """
     lm478[..., 0] *= W
     lm478[..., 1] *= H
-    n_dim = 2 if return_2d else 3
+    n_dim = 2 if returnTWO_D else 3
     if lm478.ndim == 2:
         return lm478[lm68_idx_in_mediapipe_mesh, :n_dim].astype(np.int16)
     elif lm478.ndim == 3:

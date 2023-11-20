@@ -8,6 +8,7 @@ def get_last_checkpoint(work_dir, steps=None):
     checkpoint = None
     last_ckpt_path = None
     ckpt_paths = get_all_ckpts(work_dir, steps)
+    print(ckpt_paths)
     if len(ckpt_paths) > 0:
         last_ckpt_path = ckpt_paths[0]
         checkpoint = torch.load(last_ckpt_path, map_location='cpu')
@@ -24,6 +25,8 @@ def get_all_ckpts(work_dir, steps=None):
 
 
 def load_ckpt(cur_model, ckpt_base_dir, model_name='model', force=True, strict=True, steps=None):
+    print("ckpt_base_dir", flush=True)
+    print(f'{cur_model}, {ckpt_base_dir}, {model_name}, {force}, {strict}, {steps}', flush=True)
     if os.path.isfile(ckpt_base_dir):
         base_dir = os.path.dirname(ckpt_base_dir)
         ckpt_path = ckpt_base_dir
@@ -64,3 +67,33 @@ def load_ckpt(cur_model, ckpt_base_dir, model_name='model', force=True, strict=T
             assert False, e_msg
         else:
             print(e_msg)
+
+# os.chdir('.\GeneFace')
+# os.environ['PYTHONPATH'] = '.\GeneFace'
+# print(os.getcwd())
+# a, b = get_last_checkpoint('E:/aigc/Geneface/checkpoints/gdg6_2/lm3d_radnerf_torso', 250000)
+# print(a)
+# print(b)
+
+# import os
+
+# # Directory to search in
+# directory = "E:/aigc/Geneface/checkpoints/gdg6_2/lm3d_radnerf_torso"
+
+# # File pattern to match
+# file_pattern = "model_ckpt_steps_250000.ckpt"
+
+# # Find all files that match the pattern
+# matching_files = []
+# for root, dirs, files in os.walk(directory):
+#     for file in files:
+#         if file_pattern in file:
+#             matching_files.append(os.path.join(root, file))
+# print(matching_files)
+# # Sort the files to find the one with the highest number
+# if matching_files:
+#     latest_file = max(matching_files, key=lambda x: int(x.split('_')[-1].split('.')[0]))
+# else:
+#     latest_file = None
+
+# print(latest_file)

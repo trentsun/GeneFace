@@ -23,6 +23,34 @@ def override_config(old_config: dict, new_config: dict):
 
 
 def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, global_hparams=True):
+    # if (config == ''):
+    #     config = os.environ['config']
+    # if (exp_name == ''):
+    #     exp_name = os.environ['exp_name']
+    # if (hparams_str == ''):
+    #     hparams_str = os.environ['hparams_str']
+    import os
+
+    # 尝试从环境变量获取值
+    config_env = os.environ.get('config')
+    exp_name_env = os.environ.get('exp_name')
+    hparams_str_env = os.environ.get('hparams_str')
+
+    # 仅当环境变量存在时，才覆盖原始变量
+    if config_env is not None:
+        config = config_env
+    if exp_name_env is not None:
+        exp_name = exp_name_env
+    if hparams_str_env is not None:
+        hparams_str = hparams_str_env
+
+    # 确保config, exp_name, hparams_str在这之前已经有了定义或默认值
+
+    import traceback
+    print("Printing stack:")
+    # traceback.print_stack()
+    print(config, flush=True)
+    print(exp_name, flush=True)
     if config == '' and exp_name == '':
         parser = argparse.ArgumentParser(description='')
         parser.add_argument('--config', type=str, default='',
@@ -41,6 +69,7 @@ def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, glob
         args = Args(config=config, exp_name=exp_name, hparams=hparams_str,
                     infer=False, validate=False, reset=False, debug=False, remove=False)
     global hparams
+    print(args, flush=True)
     assert args.config != '' or args.exp_name != ''
     if args.config != '':
         assert os.path.exists(args.config)
@@ -99,6 +128,9 @@ def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, glob
             for k_ in k.split(".")[:-1]:
                 config_node = config_node[k_]
             k = k.split(".")[-1]
+            print(new_hparam)
+            print(k)
+            print(v)
             if v in ['True', 'False'] or type(config_node[k]) in [bool, list, dict]:
                 if type(config_node[k]) == list:
                     v = v.replace(" ", ",")
@@ -120,8 +152,11 @@ def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, glob
     hparams_['exp_name'] = args.exp_name
     global global_print_hparams
     if global_hparams:
+        print("sdz clear", flush=True)
         hparams.clear()
         hparams.update(hparams_)
+        print("sdz update ", flush=True)
+        print(hparams, flush=True)
     if print_hparams and global_print_hparams and global_hparams:
         print('| Hparams chains: ', config_chains)
         print('| Hparams: ')
@@ -129,4 +164,6 @@ def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, glob
             print(f"\033[;33;m{k}\033[0m: {v}, ", end="\n" if i % 5 == 4 else "")
         print("")
         global_print_hparams = False
+    print("sdz param", flush = True)
+    print(hparams, flush = True)
     return hparams_

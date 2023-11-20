@@ -4,7 +4,7 @@ transformers
 scipy
 scikit-learn
 scikit-image
-tensorflow==2.6.0 # you can flexible it, this is gpu version
+tensorflow==2.8.0 # you can flexible it, this is gpu version
 tensorboard
 tensorboardX
 python_speech_features
@@ -26,3 +26,4 @@ dearpygui
 ninja
 pyaudio # for extract esperanto
 mediapipe==0.8.11
+dominate

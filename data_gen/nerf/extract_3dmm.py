@@ -10,10 +10,12 @@ import face_alignment
 import deep_3drecon
 from moviepy.editor import VideoFileClip
 import copy
+import logging
+logging.basicConfig(filename='error_face.txt', level=logging.ERROR)
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, network_size=4, device='cuda')
+fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, network_size=4, device='cuda')
 face_reconstructor = deep_3drecon.Reconstructor()
 
 # landmark detection in Deep3DRecon
@@ -26,17 +28,76 @@ def lm68_2_lm5(in_lm):
     lm = lm[[1,2,0,3,4],:2]
     return lm
 
+# def process_video(fname, out_name=None, skip_tmp=True):
+#     assert fname.endswith(".mp4")
+#     if out_name is None:
+#         out_name = fname[:-4] + '.npy'
+#     tmp_name = out_name[:-4] + '.doi'
+#     # if os.path.exists(tmp_name) and skip_tmp:
+#     #     print("tmp exist, skip")
+#     #     return
+#     # if os.path.exists(out_name):
+#     #     print("out exisit, skip")
+#     #     return
+#     os.system(f"touch {tmp_name}")
+#     cap = cv2.VideoCapture(fname)
+#     lm68_lst = []
+#     lm5_lst = []
+#     frames = []
+#     cnt = 0
+#     print(f"loading video ...")
+#     while cap.isOpened():
+#         ret, frame_bgr = cap.read()
+#         if frame_bgr is None:
+#             break
+#         frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
+#         frames.append(frame_rgb)
+#         cnt += 1
+#     for i in trange(cnt, desc="extracting 2D facial landmarks ..."):
+#         try:
+#             lm68 = fa.get_landmarks(frames[i])[0] # 识别图片中的人脸，获得角点, shape=[68,2]
+#         except Exception as e:
+#             print(f"WARNING: Caught errors when fa.get_landmarks, maybe No face detected at frame {cnt} in {fname}!")
+#             logging.error(f"Error in frame {cnt} of {fname}: {str(e)}")
+#             continue
+#             # raise ValueError("")
+#         lm5 = lm68_2_lm5(lm68)
+#         lm68_lst.append(lm68)
+#         lm5_lst.append(lm5)
+#     video_rgb = np.stack(frames) # [t, 224,224, 3]
+#     lm68_arr = np.stack(lm68_lst).reshape([cnt, 68, 2])
+#     lm5_arr = np.stack(lm5_lst).reshape([cnt, 5, 2])
+#     num_frames = cnt
+#     batch_size = 32
+#     iter_times = num_frames // batch_size
+#     last_bs = num_frames % batch_size
+#     coeff_lst = []
+#     for i_iter in trange(iter_times, desc="start extracting 3DMM..."):
+#         start_idx = i_iter * batch_size
+#         batched_images = video_rgb[start_idx: start_idx + batch_size]
+#         batched_lm5 = lm5_arr[start_idx: start_idx + batch_size]
+#         coeff, align_img = face_reconstructor.recon_coeff(batched_images, batched_lm5, return_image = True)
+#         coeff_lst.append(coeff)
+#     if last_bs != 0:
+#         batched_images = video_rgb[-last_bs:]
+#         batched_lm5 = lm5_arr[-last_bs:]
+#         coeff, align_img = face_reconstructor.recon_coeff(batched_images, batched_lm5, return_image = True)
+#         coeff_lst.append(coeff)
+#     coeff_arr = np.concatenate(coeff_lst,axis=0)
+#     result_dict = {
+#         'coeff': coeff_arr.reshape([cnt, -1]),
+#         'lm68': lm68_arr.reshape([cnt, 68, 2]),
+#         'lm5': lm5_arr.reshape([cnt, 5, 2]),
+#     }
+#     np.save(out_name, result_dict)
+#     # 删除临时文件
+#     os.remove(tmp_name)
+
 def process_video(fname, out_name=None, skip_tmp=True):
     assert fname.endswith(".mp4")
     if out_name is None:
         out_name = fname[:-4] + '.npy'
     tmp_name = out_name[:-4] + '.doi'
-    # if os.path.exists(tmp_name) and skip_tmp:
-    #     print("tmp exist, skip")
-    #     return
-    # if os.path.exists(out_name):
-    #     print("out exisit, skip")
-    #     return
     os.system(f"touch {tmp_name}")
     cap = cv2.VideoCapture(fname)
     lm68_lst = []
@@ -51,42 +112,57 @@ def process_video(fname, out_name=None, skip_tmp=True):
         frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
         frames.append(frame_rgb)
         cnt += 1
+    face_detected = []  # 新增一个列表，用于记录是否检测到人脸
     for i in trange(cnt, desc="extracting 2D facial landmarks ..."):
         try:
-            lm68 = fa.get_landmarks(frames[i])[0] # 识别图片中的人脸，获得角点, shape=[68,2]
-        except:
-            print(f"WARNING: Caught errors when fa.get_landmarks, maybe No face detected at frame {cnt} in {fname}!")
-            raise ValueError("")
-        lm5 = lm68_2_lm5(lm68)
-        lm68_lst.append(lm68)
-        lm5_lst.append(lm5)
-    video_rgb = np.stack(frames) # [t, 224,224, 3]
-    lm68_arr = np.stack(lm68_lst).reshape([cnt, 68, 2])
-    lm5_arr = np.stack(lm5_lst).reshape([cnt, 5, 2])
-    num_frames = cnt
-    batch_size = 32
-    iter_times = num_frames // batch_size
-    last_bs = num_frames % batch_size
-    coeff_lst = []
-    for i_iter in trange(iter_times, desc="start extracting 3DMM..."):
-        start_idx = i_iter * batch_size
-        batched_images = video_rgb[start_idx: start_idx + batch_size]
-        batched_lm5 = lm5_arr[start_idx: start_idx + batch_size]
-        coeff, align_img = face_reconstructor.recon_coeff(batched_images, batched_lm5, return_image = True)
-        coeff_lst.append(coeff)
-    if last_bs != 0:
-        batched_images = video_rgb[-last_bs:]
-        batched_lm5 = lm5_arr[-last_bs:]
-        coeff, align_img = face_reconstructor.recon_coeff(batched_images, batched_lm5, return_image = True)
-        coeff_lst.append(coeff)
-    coeff_arr = np.concatenate(coeff_lst,axis=0)
-    result_dict = {
-        'coeff': coeff_arr.reshape([cnt, -1]),
-        'lm68': lm68_arr.reshape([cnt, 68, 2]),
-        'lm5': lm5_arr.reshape([cnt, 5, 2]),
-    }
-    np.save(out_name, result_dict)
-    os.system(f"rm {tmp_name}")
+            lm68 = fa.get_landmarks(frames[i])
+            if lm68:  # 检查是否检测到人脸
+                lm68 = lm68[0]
+                lm5 = lm68_2_lm5(lm68)
+                lm68_lst.append(lm68)
+                lm5_lst.append(lm5)
+                face_detected.append(True)  # 标记为检测到人脸
+            else:
+                face_detected.append(False)  # 标记为未检测到人脸
+                print(f"No face detected in frame {i} of {fname}.")
+        except Exception as e:
+            print(f"WARNING: Caught errors when fa.get_landmarks in frame {i} of {fname}: {str(e)}")
+            logging.error(f"Error in frame {i} of {fname}: {str(e)}")
+            face_detected.append(False)  # 发生错误，标记为未检测到人脸
+    # 仅使用检测到人脸的帧创建 video_rgb 数组
+    video_rgb = np.stack([frame for frame, detected in zip(frames, face_detected) if detected])
+    cnt_detected = len(lm68_lst)  # 检测到人脸的帧数
+    if cnt_detected > 0:
+        lm68_arr = np.stack(lm68_lst).reshape([cnt_detected, 68, 2])
+        lm5_arr = np.stack(lm5_lst).reshape([cnt_detected, 5, 2])
+        num_frames = cnt_detected
+        batch_size = 32
+        iter_times = num_frames // batch_size
+        last_bs = num_frames % batch_size
+        coeff_lst = []
+        for i_iter in trange(iter_times, desc="start extracting 3DMM..."):
+            start_idx = i_iter * batch_size
+            batched_images = video_rgb[start_idx: start_idx + batch_size]
+            batched_lm5 = lm5_arr[start_idx: start_idx + batch_size]
+            coeff, align_img = face_reconstructor.recon_coeff(batched_images, batched_lm5, return_image=True)
+            coeff_lst.append(coeff)
+        if last_bs != 0:
+            batched_images = video_rgb[-last_bs:]
+            batched_lm5 = lm5_arr[-last_bs:]
+            coeff, align_img = face_reconstructor.recon_coeff(batched_images, batched_lm5, return_image=True)
+            coeff_lst.append(coeff)
+        coeff_arr = np.concatenate(coeff_lst, axis=0)
+        result_dict = {
+            'coeff': coeff_arr.reshape([cnt_detected, -1]),
+            'lm68': lm68_arr,
+            'lm5': lm5_arr,
+        }
+        np.save(out_name, result_dict)
+        os.remove(tmp_name)
+    else:
+        print("No faces were detected in any frame.")
+        os.remove(tmp_name)
+        return  # 如果没有检测到任何人脸，退出函数
 
 
 def split_wav(mp4_name):

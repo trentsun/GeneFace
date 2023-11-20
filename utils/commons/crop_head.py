@@ -46,7 +46,7 @@ def get_mouth_bias(three_points):
 
 def align_folder(folder_path, folder_save_path):
 
-    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device=device)
+    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, device=device)
     preds = fa.get_landmarks_from_directory(folder_path)
 
     sumpoints = 0
