@@ -21,5 +21,5 @@ def run_task():
 if __name__ == '__main__':
     set_hparams()
     print("sdz param final")
-    print(hparams['load_db_to_memory'])
+    # print(hparams['load_db_to_memory'])
     run_task()

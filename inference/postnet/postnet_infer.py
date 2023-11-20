@@ -133,6 +133,18 @@ class PostnetInfer:
         os.system(extract_wav_cmd)
         print(f"Extracted wav file (16khz) from {source_name} to {wav16k_name}.")
 
+
+def infer_main(config='E:\\aigc\GeneFace\checkpoints\\gdg6_2\\postnet\\config.yaml', hparams_str = 'infer_audio_source_name=E:\\aigc\\GeneFace\\data\\raw\\val_wavs\\guodegang_wav_20231114214421.wav,infer_out_npy_name=E:\\aigc\\GeneFace\\infer_out\\gdg6_2\\pred_lm3d\\guodegang_wav_20231114214421.npy,infer_ckpt_steps=6000'):
+    os.environ['config'] = config
+    os.environ['exp_name'] = ''
+    os.environ['hparams_str'] = hparams_str
+    set_hparams(config=config, hparams_str=hparams_str)
+    inp = {
+        'audio_source_name': 'data/raw/val_wavs/zozo.wav',
+        'out_npy_name': 'infer_out/May/pred_lm3d/zozo.npy',
+    }
+    PostnetInfer.example_run(inp)
+
 if __name__ == '__main__':
     set_hparams()
     inp = {

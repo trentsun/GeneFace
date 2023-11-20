@@ -23,6 +23,11 @@ from utils.nn.grad import get_grad_norm
 
 from tasks.radnerfs.dataset_utils import RADNeRFDataset
 
+import logging
+
+# 配置日志记录器
+logging.basicConfig(filename='radnerf_log.txt', level=logging.ERROR)
+
 
 class RADNeRFTask(BaseTask):
     def __init__(self):
@@ -149,14 +154,31 @@ class RADNeRFTask(BaseTask):
                     xmin, xmax, ymin, ymax = sample['lip_rect']
                     gt_rgb = gt_rgb.view(-1, xmax - xmin, ymax - ymin, 3).permute(0, 3, 1, 2).contiguous()
                     pred_rgb = pred_rgb.view(-1, xmax - xmin, ymax - ymin, 3).permute(0, 3, 1, 2).contiguous()
-                    losses_out['lpips_loss'] = self.criterion_lpips(pred_rgb, gt_rgb).mean()
+                    try:
+                        losses_out['lpips_loss'] = self.criterion_lpips(pred_rgb, gt_rgb).mean()
+                    except RuntimeError as e:
+                            # 记录错误信息到日志文件
+                        logging.error(f"Error calculating LPIPS loss: {idx} {e}")
             else:
                 # validation step, calulate lpips loss
-                if 'lip_rect' in sample:
-                    xmin, xmax, ymin, ymax = sample['lip_rect']
-                    lip_gt_rgb = gt_rgb.view(-1,H,W,3)[:,xmin:xmax,ymin:ymax,:].permute(0, 3, 1, 2).contiguous()
-                    lip_pred_rgb = pred_rgb.view(-1,H,W,3)[:,xmin:xmax,ymin:ymax,:].permute(0, 3, 1, 2).contiguous()
-                    losses_out['lpips_loss'] = self.criterion_lpips(lip_pred_rgb, lip_gt_rgb).mean()
+                # if 'lip_rect' in sample:
+                #     xmin, xmax, ymin, ymax = sample['lip_rect']
+                #     lip_gt_rgb = gt_rgb.view(-1,H,W,3)[:,xmin:xmax,ymin:ymax,:].permute(0, 3, 1, 2).contiguous()
+                #     lip_pred_rgb = pred_rgb.view(-1,H,W,3)[:,xmin:xmax,ymin:ymax,:].permute(0, 3, 1, 2).contiguous()
+                #     losses_out['lpips_loss'] = self.criterion_lpips(lip_pred_rgb, lip_gt_rgb).mean()
+                try:
+                    if 'lip_rect' in sample:
+                        xmin, xmax, ymin, ymax = sample['lip_rect']
+                        lip_gt_rgb = gt_rgb.view(-1, H, W, 3)[:, xmin:xmax, ymin:ymax, :].permute(0, 3, 1, 2).contiguous()
+                        lip_pred_rgb = pred_rgb.view(-1, H, W, 3)[:, xmin:xmax, ymin:ymax, :].permute(0, 3, 1, 2).contiguous()
+                        try:
+                            losses_out['lpips_loss'] = self.criterion_lpips(lip_pred_rgb, lip_gt_rgb).mean()
+                        except RuntimeError as e:
+                            # 记录错误信息到日志文件
+                            logging.error(f"Error calculating LPIPS loss: {idx} {e}")
+                except Exception as e:
+                    # 记录其他异常到日志文件
+                    logging.error(f"An error occurred: {idx} {e}")
             
             if self.model.training and start_finetune_lip:
                 # during training, flip in each iteration, to prevent forgetting other facial parts.
@@ -176,7 +198,11 @@ class RADNeRFTask(BaseTask):
                     xmin, xmax, ymin, ymax = sample['lip_rect']
                     gt_rgb = gt_rgb.view(-1, H, W, 3)[:,xmin:xmax,ymin:ymax,:].permute(0, 3, 1, 2).contiguous()
                     pred_rgb = pred_rgb.view(-1, H, W, 3)[:,xmin:xmax,ymin:ymax,:].permute(0, 3, 1, 2).contiguous()
-                    model_out['lpips_loss'] = self.criterion_lpips(pred_rgb, gt_rgb).mean()
+                    try:
+                        model_out['lpips_loss'] = self.criterion_lpips(pred_rgb, gt_rgb).mean()
+                    except RuntimeError as e:
+                        # 记录错误信息到日志文件
+                        logging.error(f"Error calculating LPIPS loss: {idx} {e}")
             return model_out
 
     ##########################

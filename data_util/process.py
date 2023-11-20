@@ -78,10 +78,13 @@ def extract_landmarks(ori_imgs_dir):
 
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType.TWO_D, flip_input=False)
     image_paths = glob.glob(os.path.join(ori_imgs_dir, '*.jpg'))
-    
+    print('start')
+    cnt = 0
     # 打开一个文件用于记录错误
     with open('error.txt', 'w') as error_file:
         for image_path in tqdm.tqdm(image_paths):
+            print(image_path)
+            
             input = cv2.imread(image_path, cv2.IMREAD_UNCHANGED) # [H, W, 3]
             input = cv2.cvtColor(input, cv2.COLOR_BGR2RGB)
             preds = fa.get_landmarks(input)
@@ -93,6 +96,8 @@ def extract_landmarks(ori_imgs_dir):
                 # 将错误信息写入文件
                 print(f"No faces detected in image {image_path}")
                 error_file.write(f'No faces detected in image {image_path}\n')
+            print(f'{cnt} {image_path} done')
+            cnt = cnt + 1
     print(f'[INFO] ===== extracted face landmarks =====')
 
 def extract_background(base_dir, ori_imgs_dir):
@@ -316,7 +321,7 @@ def face_tracking(video_id, ori_imgs_dir):
     tmp_image = cv2.imread(image_paths[0], cv2.IMREAD_UNCHANGED) # [H, W, 3]
     h, w = tmp_image.shape[:2]
 
-    cmd = f'python data_util/face_tracking/face_tracker.py --idname={video_id} --img_h={h} --img_w={w} --frame_num={len(image_paths)} > face_tracker_log'
+    cmd = f'python data_util/face_tracking/face_tracker.py --idname={video_id} --img_h={h} --img_w={w} --frame_num={len(image_paths)} '
     # cmd = f'python data_util/face_tracking/face_tracker.py --idname={video_id} --img_h={h} --img_w={w} --frame_num=1'
     os.system(cmd)
 

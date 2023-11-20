@@ -85,15 +85,31 @@ class LM3d_RADNeRFInfer(LM3dNeRFInfer):
                 sample['cond_wins'] = torch.from_numpy(get_win_conds(idexp_lm3d_normalized_win_numpy, idx, hparams['smo_win_size'], 'edge'))
         return samples
 
+def infer_main(config='E:\\aigc\\GeneFace\\checkpoints\\gdg6_2\\lm3d_radnerf_torso\\config.yaml', hparams_str='infer_audio_source_name=data\\raw\\val_wavs\\000.wav,infer_cond_name=infer_out/gdg6_2/pred_lm3d/000.npy,infer_out_video_name=infer_out/gdg6_2/pred_video/000_radnerf_torso_smo.mp4,exp_name=gdg6_2/lm3d_nerf_torso'):
+    import os
+    os.environ['config'] = config
+    os.environ['exp_name'] = 'gdg6_2/lm3d_radnerf_torso'
+    os.environ['hparams_str'] = hparams_str
+    from utils.commons.hparams import hparams, set_hparams
 
+    # from utils.commons.hparams import hparams as hp
+    # set_hparams(config=config, hparams_str=hparams_str, exp_name='gdg6_2/lm3d_nerf_torso')
+    set_hparams
+    inp = {
+            'audio_source_name': 'data/raw/val_wavs/000_16k.wav',
+            'cond_name': 'infer_out/gdg6_2/pred_lm3d/000.npy',
+            'out_video_name': 'infer_out/gdg6_2/pred_video/000.mp4',
+            }
+
+    LM3d_RADNeRFInfer.example_run(inp)
 
 if __name__ == '__main__':
     from utils.commons.hparams import set_hparams
     from utils.commons.hparams import hparams as hp
     inp = {
-            'audio_source_name': 'data/raw/val_wavs/zozo.wav',
-            'cond_name': 'infer_out/May/pred_lm3d/zozo.npy',
-            'out_video_name': 'infer_out/May/pred_video/zozo.mp4',
+            'audio_source_name': 'data/raw/val_wavs/000_16k.wav',
+            'cond_name': 'infer_out/gdg6_2/pred_lm3d/000.npy',
+            'out_video_name': 'infer_out/gdg6_2/pred_video/000.mp4',
             }
 
     LM3d_RADNeRFInfer.example_run(inp)

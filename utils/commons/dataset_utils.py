@@ -212,7 +212,8 @@ class BaseDataset(torch.utils.data.Dataset):
 
     @property
     def num_workers(self):
-        return int(os.getenv('NUM_WORKERS', hparams['ds_workers']))
+        return 0
+        # return int(os.getenv('NUM_WORKERS', hparams['ds_workers']))
 
 
 class BaseConcatDataset(ConcatDataset):
@@ -244,4 +245,5 @@ class BaseConcatDataset(ConcatDataset):
 
     @property
     def num_workers(self):
-        return self.datasets[0].num_workers
+        return 0
+        # return self.datasets[0].num_workers
