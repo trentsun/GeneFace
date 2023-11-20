@@ -7,7 +7,7 @@ egs/datasets/videos/gdg6_2/
 egs/datasets/videos/gdg7/
 face_tracker_log
 .qiniu_pythonsdk_hostscache.json
-model_train
+model_train/*
 tts.py
 error.txt
 error_face.txt
