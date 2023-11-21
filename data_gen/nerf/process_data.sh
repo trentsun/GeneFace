@@ -72,4 +72,11 @@ python tasks/run.py --config=egs/datasets/videos/gdg8/lm3d_radnerf_torso.yaml --
 
 python tasks/run.py --config=egs/datasets/videos/gdg7/lm3d_postnet_sync.yaml --exp_name=gdg7/postnet
 
+
+python data_gen/nerf/extract_hubert_mel_f0.py --video_id=gdg8
+# 9. calculate 3DMM 
+python data_gen/nerf/extract_3dmm.py --video_id=gdg8
+# binarize the dataset into `data/binary/videos/gdg8/trainval_dataset.npy`
+python data_gen/nerf/binarizer.py --config=egs/datasets/videos/gdg8/lm3d_radnerf.yaml
+
 python -c "print('success!')"

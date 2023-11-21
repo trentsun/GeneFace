@@ -16,6 +16,9 @@ lrs3.zip
 lrs3/
 test.py
 tmp.txt
+
+!data/processed/videos/gdg8/vid_coeff.npy
+
 # big files
 data_util/face_tracking/3DMM/01_MorphableModel.mat
 data_util/face_tracking/3DMM/3DMM_info.npy
@@ -32,6 +35,7 @@ deep_3drecon/checkpoints/*
 /checkpoints/*
 !/checkpoints/.gitkeep
 /data/*
+
 !/data/.gitkeep
 !data/raw/videos/May.mp4
 !data/raw/val_wavs/zozo.wav
