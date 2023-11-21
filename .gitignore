@@ -35,6 +35,7 @@ deep_3drecon/checkpoints/*
 /checkpoints/*
 !/checkpoints/gdg8
 !/checkpoints/.gitkeep
+checkpoints/gdg8/postnet/terminal_logs
 /data/*
 
 !/data/.gitkeep
