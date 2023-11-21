@@ -150,6 +150,7 @@ def set_hparams(config='', exp_name='', hparams_str='', print_hparams=True, glob
     hparams_['debug'] = args.debug
     hparams_['validate'] = args.validate
     hparams_['exp_name'] = args.exp_name
+    hparams['load_db_to_memory'] = False
     global global_print_hparams
     if global_hparams:
         print("sdz clear", flush=True)
