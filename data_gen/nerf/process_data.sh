@@ -70,6 +70,6 @@ python tasks/run.py --config=egs/datasets/videos/gdg8/lm3d_radnerf.yaml --exp_na
 python tasks/run.py --config=egs/datasets/videos/gdg8/lm3d_radnerf_torso.yaml --exp_name=gdg8/lm3d_radnerf_torso
 
 
-
+python tasks/run.py --config=egs/datasets/videos/gdg7/lm3d_postnet_sync.yaml --exp_name=gdg7/postnet
 
 python -c "print('success!')"
