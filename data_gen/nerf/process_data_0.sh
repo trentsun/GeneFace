@@ -8,7 +8,7 @@ python data_util/process.py --video_id=$1 --task=3
 # 7.detect landmarks
 python data_util/process.py --video_id=$1 --task=7
 # 4.face segmentation parsing; 8.estimate head pose
-python data_util/process.py --video_id=$1 --task=4 &
+# python data_util/process.py --video_id=$1 --task=4 &
 python data_util/process.py --video_id=$1 --task=8
 # 4. extract background image
 # python data_util/process.py --video_id=$1 --task=5

@@ -17,7 +17,8 @@ lrs3/
 test.py
 tmp.txt
 
-!data/processed/videos/gdg8/vid_coeff.npy
+
+
 
 # big files
 data_util/face_tracking/3DMM/01_MorphableModel.mat
@@ -35,8 +36,10 @@ deep_3drecon/checkpoints/*
 /checkpoints/*
 !/checkpoints/gdg8
 !/checkpoints/.gitkeep
-checkpoints/gdg8/postnet/terminal_logs
 /data/*
+!data/processed/videos/gdg8/debug/debug_render/*
+!data/processed/videos/gdg8/track_params.pt
+!data/processed/videos/gdg8/vid_coeff.npy
 
 !/data/.gitkeep
 !data/raw/videos/May.mp4
@@ -190,4 +193,3 @@ deep_3drecon/mesh_renderer/bazel-bin
 deep_3drecon/mesh_renderer/bazel-mesh_renderer
 deep_3drecon/mesh_renderer/bazel-out
 deep_3drecon/mesh_renderer/bazel-testlogs
-checkpoints/gdg8/postnet/model_ckpt_steps_1000.ckpt
