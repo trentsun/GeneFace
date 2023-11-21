@@ -1,0 +1,63 @@
+| Copied codes to checkpoints/gdg8/lm3d_radnerf_torso\codes\20231121023322.
+ckpt_base_dir
+RADNeRF(
+  (cond_prenet): AudioNet(
+    (encoder_conv): Sequential(
+      (0): Conv1d(204, 32, kernel_size=(3,), stride=(1,), padding=(1,))
+      (1): LeakyReLU(negative_slope=0.02, inplace=True)
+      (2): Conv1d(32, 32, kernel_size=(3,), stride=(1,), padding=(1,))
+      (3): LeakyReLU(negative_slope=0.02, inplace=True)
+      (4): Conv1d(32, 64, kernel_size=(3,), stride=(1,), padding=(1,))
+      (5): LeakyReLU(negative_slope=0.02, inplace=True)
+      (6): Conv1d(64, 64, kernel_size=(3,), stride=(1,), padding=(1,))
+      (7): LeakyReLU(negative_slope=0.02, inplace=True)
+    )
+    (encoder_fc1): Sequential(
+      (0): Linear(in_features=64, out_features=64, bias=True)
+      (1): LeakyReLU(negative_slope=0.02, inplace=True)
+      (2): Linear(in_features=64, out_features=64, bias=True)
+    )
+  )
+  (cond_att_net): AudioAttNet(
+    (attentionConvNet): Sequential(
+      (0): Conv1d(64, 16, kernel_size=(3,), stride=(1,), padding=(1,))
+      (1): LeakyReLU(negative_slope=0.02, inplace=True)
+      (2): Conv1d(16, 8, kernel_size=(3,), stride=(1,), padding=(1,))
+      (3): LeakyReLU(negative_slope=0.02, inplace=True)
+      (4): Conv1d(8, 4, kernel_size=(3,), stride=(1,), padding=(1,))
+      (5): LeakyReLU(negative_slope=0.02, inplace=True)
+      (6): Conv1d(4, 2, kernel_size=(3,), stride=(1,), padding=(1,))
+      (7): LeakyReLU(negative_slope=0.02, inplace=True)
+      (8): Conv1d(2, 1, kernel_size=(3,), stride=(1,), padding=(1,))
+      (9): LeakyReLU(negative_slope=0.02, inplace=True)
+    )
+    (attentionNet): Sequential(
+      (0): Linear(in_features=5, out_features=5, bias=True)
+      (1): Softmax(dim=1)
+    )
+  )
+  (position_embedder): GridEncoder: input_dim=3 num_levels=16 level_dim=2 resolution=16 -> 2048 per_level_scale=1.3819 params=(903480, 2) gridtype=tiled align_corners=False interpolation=linear
+  (ambient_net): MLP(
+    (net): ModuleList(
+      (0): Linear(in_features=96, out_features=128, bias=False)
+      (1): Linear(in_features=128, out_features=128, bias=False)
+      (2): Linear(in_features=128, out_features=2, bias=False)
+    )
+  )
+  (ambient_embedder): GridEncoder: input_dim=2 num_levels=16 level_dim=2 resolution=16 -> 2048 per_level_scale=1.3819 params=(555520, 2) gridtype=tiled align_corners=False interpolation=linear
+  (sigma_net): MLP(
+    (net): ModuleList(
+      (0): Linear(in_features=64, out_features=128, bias=False)
+      (1): Linear(in_features=128, out_features=128, bias=False)
+      (2): Linear(in_features=128, out_features=129, bias=False)
+    )
+  )
+  (direction_embedder): SHEncoder: input_dim=3 degree=4
+  (color_net): MLP(
+    (net): ModuleList(
+      (0): Linear(in_features=148, out_features=128, bias=False)
+      (1): Linear(in_features=128, out_features=3, bias=False)
+    )
+  )
+), checkpoints/gdg8/lm3d_radnerf, model, True, True, None
+[]

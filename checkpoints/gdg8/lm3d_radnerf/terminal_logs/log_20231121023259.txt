@@ -1,0 +1,10 @@
+| Copied codes to checkpoints/gdg8/lm3d_radnerf\codes\20231121023259.
+[]
+| cond_prenet Trainable Parameters: 0.050M
+| cond_att_net Trainable Parameters: 0.004M
+| position_embedder Trainable Parameters: 1.807M
+| ambient_net Trainable Parameters: 0.029M
+| ambient_embedder Trainable Parameters: 1.111M
+| sigma_net Trainable Parameters: 0.041M
+| direction_embedder Trainable Parameters: 0.000M
+| color_net Trainable Parameters: 0.019M

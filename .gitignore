@@ -33,6 +33,7 @@ deep_3drecon/checkpoints/*
 .vscode
 ### Project ignore
 /checkpoints/*
+!/checkpoints/gdg8
 !/checkpoints/.gitkeep
 /data/*
 

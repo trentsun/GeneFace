@@ -1,0 +1,60 @@
+accumulate_grad_batches: 1
+amp: false
+audio2motion_ckpt_steps: 40000
+audio2motion_task_cls: tasks.audio2motion.lm3d_vae_sync.VAESyncAudio2MotionTask
+audio2motion_work_dir: checkpoints/lrs3/lm3d_vae_sync/
+base_config:
+- egs/egs_bases/postnet/base.yaml
+binary_data_dir: data/binary/lrs3
+clip_grad_norm: 1
+clip_grad_value: 0
+debug: false
+discriminator_scheduler_params:
+  gamma: 0.5
+  step_size: 40000
+eval_max_batches: 10
+gen_dir_name: ''
+hidden_size: 256
+infer_audio_source_name: data/raw/val_wavs/zozo.wav
+infer_ckpt_steps: 4000
+infer_out_npy_name: infer_out/May/pred_lm3d/zozo.npy
+lambda_kl: 0.5
+load_ckpt: ''
+load_db_to_memory: true
+lr: 0.0005
+max_updates: 20000
+num_ckpt_keep: 500
+num_sanity_val_steps: 5
+num_valid_plots: 1
+optimizer_adam_beta1: 0.9
+optimizer_adam_beta2: 0.999
+person_binary_data_dir: data/binary/videos
+postnet_disc_interval: 1
+postnet_disc_lr: 0.0001
+postnet_disc_start_steps: 0
+postnet_lambda_adv: 0.85
+postnet_lambda_mse: 0.05
+postnet_lambda_sync: 0.1
+postnet_lr: 0.0001
+print_nan_grads: false
+resume_from_checkpoint: 0
+save_best: false
+save_codes:
+- tasks
+- modules
+- egs
+save_gt: true
+scheduler: none
+seed: 9999
+syncnet_ckpt_steps: 40000
+syncnet_work_dir: checkpoints/lrs3/syncnet
+task_cls: tasks.postnet.lm3d_postnet_adv_sync.PostnetAdvSyncTask
+tb_log_interval: 100
+val_check_interval: 1000
+valid_infer_interval: 1000
+valid_monitor_key: val_loss
+valid_monitor_mode: min
+video_id: gdg8
+warmup_updates: 1000
+weight_decay: 0
+work_dir: checkpoints/gdg8/postnet

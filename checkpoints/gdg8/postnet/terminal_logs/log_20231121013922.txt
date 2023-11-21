@@ -1,0 +1,92 @@
+| Copied codes to checkpoints/gdg8/postnet\codes\20231121013922.
+| model Arch:  CNNPostNet(
+  (block1): Sequential(
+    (0): Conv1d(
+      (conv_block): Sequential(
+        (0): Conv1d(204, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (act): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+    (1): Conv1d(
+      (conv_block): Sequential(
+        (0): Conv1d(128, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (act): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+    (2): Conv1d(
+      (conv_block): Sequential(
+        (0): Conv1d(128, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (act): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+  )
+  (block2): Sequential(
+    (0): Conv1d(
+      (conv_block): Sequential(
+        (0): Conv1d(128, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+        (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (act): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+    (1): Conv1d(
+      (conv_block): Sequential(
+        (0): Conv1d(256, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+        (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (act): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+    (2): Conv1d(
+      (conv_block): Sequential(
+        (0): Conv1d(256, 256, kernel_size=(3,), stride=(1,), padding=(1,))
+        (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (act): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+  )
+  (block3): Sequential(
+    (0): Conv1d(
+      (conv_block): Sequential(
+        (0): Conv1d(256, 128, kernel_size=(3,), stride=(1,), padding=(1,))
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (act): LeakyReLU(negative_slope=0.2, inplace=True)
+    )
+    (1): Conv1d(128, 204, kernel_size=(1,), stride=(1,))
+  )
+)
+| model Trainable Parameters: 0.797M
+[]
+hparams load_db
+{'binary_data_dir': 'data/binary/lrs3', 'work_dir': 'checkpoints/gdg8/postnet', 'load_ckpt': '', 'tb_log_interval': 100, 'gen_dir_name': '', 'save_gt': True, 'num_ckpt_keep': 500, 'val_check_interval': 1000, 'valid_infer_interval': 1000, 'max_updates': 20000, 'seed': 9999, 'lr': 0.0005, 'scheduler': 'none', 'warmup_updates': 1000, 'optimizer_adam_beta1': 0.9, 'optimizer_adam_beta2': 0.999, 'weight_decay': 0, 'accumulate_grad_batches': 1, 'clip_grad_norm': 1, 'clip_grad_value': 0, 'num_sanity_val_steps': 5, 'num_valid_plots': 1, 'eval_max_batches': 10, 'print_nan_grads': False, 'resume_from_checkpoint': 0, 'amp': False, 'valid_monitor_key': 'val_loss', 'valid_monitor_mode': 'min', 'save_best': False, 'debug': False, 'save_codes': ['tasks', 'modules', 'egs'], 'hidden_size': 256, 'infer_audio_source_name': 'data/raw/val_wavs/zozo.wav', 'infer_out_npy_name': 'infer_out/May/pred_lm3d/zozo.npy', 'infer_ckpt_steps': 4000, 'load_db_to_memory': True, 'base_config': ['egs/egs_bases/postnet/base.yaml'], 'task_cls': 'tasks.postnet.lm3d_postnet_adv_sync.PostnetAdvSyncTask', 'lambda_kl': 0.5, 'syncnet_work_dir': 'checkpoints/lrs3/syncnet', 'syncnet_ckpt_steps': 40000, 'audio2motion_task_cls': 'tasks.audio2motion.lm3d_vae_sync.VAESyncAudio2MotionTask', 'person_binary_data_dir': 'data/binary/videos', 'postnet_lr': 0.0001, 'postnet_lambda_adv': 0.85, 'postnet_lambda_sync': 0.1, 'postnet_lambda_mse': 0.05, 'postnet_disc_lr': 0.0001, 'discriminator_scheduler_params': {'gamma': 0.5, 'step_size': 40000}, 'postnet_disc_start_steps': 0, 'postnet_disc_interval': 1, 'audio2motion_work_dir': 'checkpoints/lrs3/lm3d_vae_sync/', 'audio2motion_ckpt_steps': 40000, 'video_id': 'gdg8', 'infer': False, 'validate': False, 'exp_name': 'gdg8/postnet'}
+| Validation results@0: {'total_loss': 0.388, 'mse': 0.0957, 'sync': 0.2923}
+hparams load_db
+{'binary_data_dir': 'data/binary/lrs3', 'work_dir': 'checkpoints/gdg8/postnet', 'load_ckpt': '', 'tb_log_interval': 100, 'gen_dir_name': '', 'save_gt': True, 'num_ckpt_keep': 500, 'val_check_interval': 1000, 'valid_infer_interval': 1000, 'max_updates': 20000, 'seed': 9999, 'lr': 0.0005, 'scheduler': 'none', 'warmup_updates': 1000, 'optimizer_adam_beta1': 0.9, 'optimizer_adam_beta2': 0.999, 'weight_decay': 0, 'accumulate_grad_batches': 1, 'clip_grad_norm': 1, 'clip_grad_value': 0, 'num_sanity_val_steps': 5, 'num_valid_plots': 1, 'eval_max_batches': 10, 'print_nan_grads': False, 'resume_from_checkpoint': 0, 'amp': False, 'valid_monitor_key': 'val_loss', 'valid_monitor_mode': 'min', 'save_best': False, 'debug': False, 'save_codes': ['tasks', 'modules', 'egs'], 'hidden_size': 256, 'infer_audio_source_name': 'data/raw/val_wavs/zozo.wav', 'infer_out_npy_name': 'infer_out/May/pred_lm3d/zozo.npy', 'infer_ckpt_steps': 4000, 'load_db_to_memory': True, 'base_config': ['egs/egs_bases/postnet/base.yaml'], 'task_cls': 'tasks.postnet.lm3d_postnet_adv_sync.PostnetAdvSyncTask', 'lambda_kl': 0.5, 'syncnet_work_dir': 'checkpoints/lrs3/syncnet', 'syncnet_ckpt_steps': 40000, 'audio2motion_task_cls': 'tasks.audio2motion.lm3d_vae_sync.VAESyncAudio2MotionTask', 'person_binary_data_dir': 'data/binary/videos', 'postnet_lr': 0.0001, 'postnet_lambda_adv': 0.85, 'postnet_lambda_sync': 0.1, 'postnet_lambda_mse': 0.05, 'postnet_disc_lr': 0.0001, 'discriminator_scheduler_params': {'gamma': 0.5, 'step_size': 40000}, 'postnet_disc_start_steps': 0, 'postnet_disc_interval': 1, 'audio2motion_work_dir': 'checkpoints/lrs3/lm3d_vae_sync/', 'audio2motion_ckpt_steps': 40000, 'video_id': 'gdg8', 'infer': False, 'validate': False, 'exp_name': 'gdg8/postnet'}
+Epoch 0 ended. Steps: 57. {'total_loss': 0.45808765988208744, 'mse': 0.25562018861896113, 'sync': 0.5226612566855916, 'adv': 0.8265449185120431, 'disc_neg_conf': 0.1076104094666478, 'disc_pos_conf': 0.8241244238523537, 'disc_fake_loss': 0.041768368948843296, 'disc_true_loss': 0.10679661446626772}
+Epoch 1 ended. Steps: 114. {'total_loss': 0.39849977051479774, 'mse': 0.22862174531869722, 'sync': 0.26610267476031657, 'adv': 0.6841097996945966, 'disc_neg_conf': 0.20803625881671906, 'disc_pos_conf': 0.8143366439300671, 'disc_fake_loss': 0.1001253528357075, 'disc_true_loss': 0.07733949185594131}
+Epoch 2 ended. Steps: 171. {'total_loss': 0.4261971492516367, 'mse': 0.20603306748365102, 'sync': 0.20778706695949822, 'adv': 0.3622359968068307, 'disc_neg_conf': 0.4324969074182343, 'disc_pos_conf': 0.4935747259541562, 'disc_fake_loss': 0.2274569210253264, 'disc_true_loss': 0.28595641542944994}
+Epoch 3 ended. Steps: 228. {'total_loss': 0.3952038579604082, 'mse': 0.1734771861841804, 'sync': 0.16100459428210007, 'adv': 0.34765655220600594, 'disc_neg_conf': 0.4299932927416082, 'disc_pos_conf': 0.5026519230583257, 'disc_fake_loss': 0.20748229638526314, 'disc_true_loss': 0.2626430190968932}
+Epoch 4 ended. Steps: 285. {'total_loss': 0.37938789212912843, 'mse': 0.14152999405275313, 'sync': 0.13933729929359337, 'adv': 0.32811886176728366, 'disc_neg_conf': 0.4490210241393039, 'disc_pos_conf': 0.5322176505599105, 'disc_fake_loss': 0.22596112730210288, 'disc_true_loss': 0.23290338720145978}
+Epoch 5 ended. Steps: 342. {'total_loss': 0.368812375554913, 'mse': 0.1251109122184285, 'sync': 0.1198390860829437, 'adv': 0.2949861246242858, 'disc_neg_conf': 0.46969220931069894, 'disc_pos_conf': 0.5264552815964347, 'disc_fake_loss': 0.23441929200239348, 'disc_true_loss': 0.23422779038287045}
+Epoch 6 ended. Steps: 399. {'total_loss': 0.37290895024412557, 'mse': 0.11927702160258043, 'sync': 0.11135761740437725, 'adv': 0.2890856519602893, 'disc_neg_conf': 0.4728921897578658, 'disc_pos_conf': 0.5108832743084222, 'disc_fake_loss': 0.23478709867126063, 'disc_true_loss': 0.24820837875207266}
+Epoch 7 ended. Steps: 456. {'total_loss': 0.3693871185706373, 'mse': 0.11189673984782737, 'sync': 0.10304838327462212, 'adv': 0.2806713996749175, 'disc_neg_conf': 0.4800093236722444, 'disc_pos_conf': 0.514521160669494, 'disc_fake_loss': 0.24076640056936363, 'disc_true_loss': 0.24353746390133574}
+Epoch 8 ended. Steps: 513. {'total_loss': 0.37024497711344767, 'mse': 0.10711490428238585, 'sync': 0.0974893254930513, 'adv': 0.2850502656217207, 'disc_neg_conf': 0.4745808797970153, 'disc_pos_conf': 0.5082454733681261, 'disc_fake_loss': 0.2341978772167574, 'disc_true_loss': 0.24889466480204933}
+Epoch 9 ended. Steps: 570. {'total_loss': 0.368044932421885, 'mse': 0.1006330447761636, 'sync': 0.09302340421760291, 'adv': 0.2735956015816906, 'disc_neg_conf': 0.4847259981590405, 'disc_pos_conf': 0.5106572477441085, 'disc_fake_loss': 0.2430575163218013, 'disc_true_loss': 0.2461420872755218}
+Epoch 10 ended. Steps: 627. {'total_loss': 0.3678916809067391, 'mse': 0.0947558266813295, 'sync': 0.08853862800619058, 'adv': 0.2782413243201741, 'disc_neg_conf': 0.47932844099245575, 'disc_pos_conf': 0.5078029627339882, 'disc_fake_loss': 0.23692078025717483, 'disc_true_loss': 0.2487657932858718}
+Epoch 11 ended. Steps: 684. {'total_loss': 0.3655427617200634, 'mse': 0.090999153099562, 'sync': 0.08468450292160637, 'adv': 0.2771915929359302, 'disc_neg_conf': 0.4806495810809888, 'disc_pos_conf': 0.5130091309547424, 'disc_fake_loss': 0.2385613693479906, 'disc_true_loss': 0.2438928848295881}
+Epoch 12 ended. Steps: 741. {'total_loss': 0.3654361947586662, 'mse': 0.08730985080463845, 'sync': 0.08418575765793784, 'adv': 0.28635161644534063, 'disc_neg_conf': 0.4733058559267144, 'disc_pos_conf': 0.5162452407050551, 'disc_fake_loss': 0.23293921952707725, 'disc_true_loss': 0.24175022307195163}
+Epoch 13 ended. Steps: 798. {'total_loss': 0.36394922291500525, 'mse': 0.08380866521283199, 'sync': 0.08178324108583886, 'adv': 0.29517441569713126, 'disc_neg_conf': 0.4673020410955998, 'disc_pos_conf': 0.5253600394516661, 'disc_fake_loss': 0.2297410674785313, 'disc_true_loss': 0.23489036293406235}
+Epoch 14 ended. Steps: 855. {'total_loss': 0.36427644404925796, 'mse': 0.08253345612371177, 'sync': 0.0813632747321798, 'adv': 0.3049266100452657, 'disc_neg_conf': 0.4617882182723598, 'disc_pos_conf': 0.5341232549725917, 'disc_fake_loss': 0.22849881139240766, 'disc_true_loss': 0.22860345113695713}
+Epoch 15 ended. Steps: 912. {'total_loss': 0.3621410222952826, 'mse': 0.07968432966031526, 'sync': 0.07925611028545781, 'adv': 0.3250640826789956, 'disc_neg_conf': 0.4488778135232758, 'disc_pos_conf': 0.553675749845672, 'disc_fake_loss': 0.22290218229356565, 'disc_true_loss': 0.21316556005101456}
+Epoch 16 ended. Steps: 969. {'total_loss': 0.36577232914012775, 'mse': 0.08023249540935483, 'sync': 0.08190879840077016, 'adv': 0.3484750018830885, 'disc_neg_conf': 0.43575106456614376, 'disc_pos_conf': 0.5687408938742521, 'disc_fake_loss': 0.2196583074697277, 'disc_true_loss': 0.20348008160005537}
+| Validation results@1000: {'total_loss': 0.2525, 'mse': 0.0584, 'sync': 0.194}
+Epoch 17 ended. Steps: 1026. {'total_loss': 0.35992630558055744, 'mse': 0.07859979177776136, 'sync': 0.08276968580066112, 'adv': 0.3851659284871921, 'disc_neg_conf': 0.4040363389149047, 'disc_pos_conf': 0.5921529040001986, 'disc_fake_loss': 0.19340405926892631, 'disc_true_loss': 0.186850548574799}
+Epoch 18 ended. Steps: 1083. {'total_loss': 0.36138301564936054, 'mse': 0.0779657722042318, 'sync': 0.08166396343394329, 'adv': 0.4226521329398741, 'disc_neg_conf': 0.38503568946269523, 'disc_pos_conf': 0.637583105187667, 'disc_fake_loss': 0.19265076426560418, 'disc_true_loss': 0.1587962598392838}
+Epoch 19 ended. Steps: 1140. {'total_loss': 0.36975539893957604, 'mse': 0.07630511543207001, 'sync': 0.0832945914906368, 'adv': 0.45236398750229884, 'disc_neg_conf': 0.369344838094293, 'disc_pos_conf': 0.6502518978035241, 'disc_fake_loss': 0.1909258075450596, 'disc_true_loss': 0.15193087568408564}
+Epoch 20 ended. Steps: 1197. {'total_loss': 0.37740938378530636, 'mse': 0.07812218642548512, 'sync': 0.08603117549628542, 'adv': 0.5030406376248912, 'disc_neg_conf': 0.33684624365547244, 'disc_pos_conf': 0.6705468192435148, 'disc_fake_loss': 0.17683476157355726, 'disc_true_loss': 0.13789022517831703}
+Epoch 21 ended. Steps: 1254. {'total_loss': 0.3777935813393509, 'mse': 0.07709913661605433, 'sync': 0.08889039553571165, 'adv': 0.5154865070393211, 'disc_neg_conf': 0.3287884237473471, 'disc_pos_conf': 0.6850615739822388, 'disc_fake_loss': 0.17312977829000406, 'disc_true_loss': 0.13154984781878037}
+Epoch 22 ended. Steps: 1311. {'total_loss': 0.3923951447532888, 'mse': 0.08251824648233883, 'sync': 0.09160448087934862, 'adv': 0.5872469858119362, 'disc_neg_conf': 0.28690424051723984, 'disc_pos_conf': 0.7242157804338556, 'disc_fake_loss': 0.1618278964765762, 'disc_true_loss': 0.11051608164582336}
+Epoch 23 ended. Steps: 1368. {'total_loss': 0.405665673446237, 'mse': 0.0941618471814875, 'sync': 0.096946093989046, 'adv': 0.6066071291764578, 'disc_neg_conf': 0.2812627911110196, 'disc_pos_conf': 0.7222359943808171, 'disc_fake_loss': 0.16908975991240718, 'disc_true_loss': 0.11222280712242712}
+Epoch 24 ended. Steps: 1425. {'total_loss': 0.3888557329773903, 'mse': 0.09838890441154179, 'sync': 0.09674965720950511, 'adv': 0.5526077130384612, 'disc_neg_conf': 0.30902669670901733, 'disc_pos_conf': 0.704639334427683, 'disc_fake_loss': 0.17041837790033273, 'disc_true_loss': 0.12298211076280527}
