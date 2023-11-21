@@ -190,3 +190,4 @@ deep_3drecon/mesh_renderer/bazel-bin
 deep_3drecon/mesh_renderer/bazel-mesh_renderer
 deep_3drecon/mesh_renderer/bazel-out
 deep_3drecon/mesh_renderer/bazel-testlogs
+checkpoints/gdg8/postnet/model_ckpt_steps_1000.ckpt
